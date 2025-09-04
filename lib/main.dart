@@ -1,0 +1,125 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Checklist App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView( // Para que se pueda desplazar
+        child: Column(
+          children: [
+
+            // 1. ENCABEZADO NARANJA
+            Container(
+              color: Colors.orange,
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  const Text(
+                    "CHECKLIST",
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  // Aquí va el logo en blanco y negro
+                  // Guarda tu imagen en assets/logo.png
+                  Image.asset("assets/logo.png", height: 100),
+                ],
+              ),
+            ),
+
+            // 2. BARRA DE BOTONES
+            Container(
+              color: Colors.orangeAccent,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  Text("REGISTRO ASISTENCIA",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("ADMINISTRADOR",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+
+            // 3. SECCION PUBLICIDAD / REFERRIDOS
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Aquí puedes poner la imagen del chico señalando
+                  // Ej: assets/referral.png
+                  Image.asset("assets/referral.png"),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Si eres estudiante o empleado activo, "
+                    "obtén \$150.000 por cada referido que se matricule.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+
+            // 4. TEXTO UNIVERSIDAD
+            const SizedBox(height: 10),
+            const Text(
+              "Universidad San Buenaventura",
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange),
+            ),
+            const SizedBox(height: 20),
+
+            // 5. IMÁGENES DEL CAMPUS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    // Aquí la foto 1: assets/campus1.jpg
+                    child: Image.asset("assets/campus1.png"),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    // Aquí la foto 2: assets/campus2.jpg
+                    child: Image.asset("assets/campus2.jpg"),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
