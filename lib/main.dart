@@ -27,7 +27,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( // Para que se pueda desplazar
+      body: SingleChildScrollView(
         child: Column(
           children: [
 
@@ -46,8 +46,7 @@ class MyHomePage extends StatelessWidget {
                         color: Colors.white),
                   ),
                   const SizedBox(height: 10),
-                  // Aquí va el logo en blanco y negro
-                  // Guarda tu imagen en assets/logo.png
+                  
                   Image.asset("assets/logo.png", height: 100),
                 ],
               ),
@@ -75,9 +74,9 @@ class MyHomePage extends StatelessWidget {
     children: [
       CarouselSlider(
         options: CarouselOptions(
-          height: 200,              // altura del carrusel
-          autoPlay: true,           // para que pase automático
-          enlargeCenterPage: true,  // resalta la imagen central
+          height: 200,              
+          autoPlay: true,           
+          enlargeCenterPage: true,  
         ),
         items: [
           "assets/ref1.png",
@@ -124,14 +123,14 @@ class MyHomePage extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    // Aquí la foto 1: assets/campus1.jpg
+                    
                     child: Image.asset("assets/campus1.png"),
                   ),
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    // Aquí la foto 2: assets/campus2.jpg
+                    
                     child: Image.asset("assets/campus2.jpg"),
                   ),
                 ),
