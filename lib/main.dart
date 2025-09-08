@@ -117,7 +117,7 @@ class MyHomePage extends StatelessWidget {
             // 4. TEXTO UNIVERSIDAD
             const SizedBox(height: 10),
             const Text(
-              "Universidad JAVERIANA",
+              "Universidad San Buenaventura",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
