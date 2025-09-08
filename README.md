@@ -1,16 +1,47 @@
-# first_aplication
+# 📱 Checklist
 
-A new Flutter project.
+Un nuevo proyecto Flutter.
 
-## Getting Started
+## 📝 Descripción
 
-This project is a starting point for a Flutter application.
+Este proyecto es un ejemplo visual de cómo quedará la aplicación final de Checklist. Su objetivo es servir como prototipo interactivo para mostrar la estructura, el diseño y la navegación de una app de checklist, permitiendo visualizar pantallas, flujos y funcionalidades principales antes de la implementación definitiva.
 
-A few resources to get you started if this is your first Flutter project:
+Incluye:
+- 🖼️ Vistas de ejemplo de las pantallas principales.
+- ✅ Ejemplo de creación, edición y marcado de tareas en una lista.
+- 🎨 Diseño visual preliminar para revisión y validación.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🚀 Primeros pasos
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Este proyecto es un punto de partida para una aplicación Flutter.
+
+### 📚 Recursos útiles
+
+- [📝 Lab: Escribe tu primera app Flutter](https://docs.flutter.dev/get-started/codelab)
+- [🍳 Cookbook: Ejemplos útiles de Flutter](https://docs.flutter.dev/cookbook)
+
+### 🛠️ Instalación rápida
+
+1. **Clona el repositorio:**
+   ```sh
+   git clone <https://github.com/Camilo1777/AppChecklist.git>
+   cd AppChecklist
+   ```
+
+2. **Instala las dependencias:**
+   ```sh
+   flutter pub get
+   ```
+
+3. **Ejecuta la aplicación:**
+   ```sh
+   flutter run
+   ```
+
+### 📄 Documentación
+
+Para más ayuda sobre Flutter, consulta la [documentación en línea](https://docs.flutter.dev/), que ofrece tutoriales, ejemplos, guías de desarrollo móvil y una referencia completa de la API.
+
+---
+
+> Proyecto generado con [Flutter](https://flutter.dev/)
