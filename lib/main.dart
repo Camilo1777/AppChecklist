@@ -29,9 +29,9 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(
         255,
-        0,
-        228,
-        49,
+        255,
+        252,
+        249,
       ), // Cambia aquí el color de fondo
       body: SingleChildScrollView(
         child: Column(
