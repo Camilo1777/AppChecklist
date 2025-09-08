@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,22 +70,41 @@ class MyHomePage extends StatelessWidget {
 
             // 3. SECCION PUBLICIDAD / REFERRIDOS
             Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // Aquí puedes poner la imagen del chico señalando
-                  // Ej: assets/referral.png
-                  Image.asset("assets/referral.png"),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Si eres estudiante o empleado activo, "
-                    "obtén \$150.000 por cada referido que se matricule.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+  padding: const EdgeInsets.all(16),
+  child: Column(
+    children: [
+      CarouselSlider(
+        options: CarouselOptions(
+          height: 200,              // altura del carrusel
+          autoPlay: true,           // para que pase automático
+          enlargeCenterPage: true,  // resalta la imagen central
+        ),
+        items: [
+          "assets/ref1.png",
+          "assets/ref2.png",
+          "assets/ref3.png",
+        ].map((item) => Container(
+              margin: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  item,
+                  fit: BoxFit.cover,
+                  width: 1000,
+                ),
               ),
-            ),
+            )).toList(),
+      ),
+      const SizedBox(height: 10),
+      const Text(
+        "Si eres estudiante o empleado activo, "
+        "obtén \$150.000 por cada referido que se matricule.",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16),
+      ),
+    ],
+  ),
+),
 
             // 4. TEXTO UNIVERSIDAD
             const SizedBox(height: 10),
