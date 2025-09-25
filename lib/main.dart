@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'login.dart'; // <-- Agrega esta línea
 
 void main() {
   runApp(const MyApp());
@@ -58,11 +59,21 @@ class MyHomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Text("REGISTRO ASISTENCIA",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("ADMINISTRADOR",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.orange,
+                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                      );
+                    },
+                    child: const Text("PROFESOR"),
+                  ),
                 ],
               ),
             ),
