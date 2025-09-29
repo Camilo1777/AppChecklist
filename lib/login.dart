@@ -1,7 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'control_page.dart';
+import 'nuevo.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usuarioController = TextEditingController();
+  final TextEditingController contrasenaController = TextEditingController();
+  bool cargando = false;
+  String error = '';
+
+  Future<void> login() async {
+    setState(() {
+      cargando = true;
+      error = '';
+    });
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse('http://127.0.0.1:8000/login'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'usuario': usuarioController.text,
+              'contrasena': contrasenaController.text,
+            }),
+          )
+          .timeout(const Duration(seconds: 50));
+
+      setState(() {
+        cargando = false;
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // Si la autenticación es exitosa, navega al panel de control
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ControlPage(usuario: usuarioController.text),
+          ),
+        );
+      } else {
+        setState(() {
+          error = 'Usuario o contraseña incorrectos';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        cargando = false;
+        error = 'Error de conexión o tiempo de espera agotado';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +98,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               TextField(
+                controller: usuarioController,
                 decoration: InputDecoration(
                   labelText: 'Usuario',
                   border: OutlineInputBorder(
@@ -50,6 +109,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: contrasenaController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
@@ -60,6 +120,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              if (error.isNotEmpty)
+                Text(error, style: const TextStyle(color: Colors.red)),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -71,13 +133,13 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {
-                    // Acción de login
-                  },
-                  child: const Text(
-                    'Ingresar',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  onPressed: cargando ? null : login,
+                  child: cargando
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Ingresar',
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -93,7 +155,10 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Acción para crear nuevo maestro
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const NuevoProfesorPage()),
+                    );
                   },
                   child: const Text(
                     'Crear nuevo maestro',
@@ -108,3 +173,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
