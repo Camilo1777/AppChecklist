@@ -7,6 +7,7 @@ class ControlPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Mostrar el valor que se pase en `usuario` (preparado desde el login)
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -17,7 +18,7 @@ class ControlPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Bienvenido, $usuario 👋",
+              "Bienvenido maestro: $usuario 👋",
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

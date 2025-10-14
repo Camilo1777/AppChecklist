@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'control_page.dart';
 import 'nuevo.dart';
+import 'api_config.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   bool cargando = false;
   String error = '';
 
+  @override
+  void dispose() {
+    usuarioController.dispose();
+    contrasenaController.dispose();
+    super.dispose();
+  }
+
   Future<void> login() async {
     setState(() {
       cargando = true;
@@ -26,27 +34,66 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final response = await http
           .post(
-            Uri.parse('http://127.0.0.1:8000/login'),
+            Uri.parse('${apiBaseUrl()}/checklist_api/auth/login.php'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
-              'usuario': usuarioController.text,
-              'contrasena': contrasenaController.text,
+              'email': usuarioController.text,
+              'password': contrasenaController.text,
             }),
           )
           .timeout(const Duration(seconds: 50));
+
+      // Antes de tocar el estado, verificar que el widget siga montado
+      if (!mounted) return;
 
       setState(() {
         cargando = false;
       });
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        // Si la autenticación es exitosa, navega al panel de control
+        // Parsear respuesta JSON y usar el objeto `user` si viene del backend.
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map && (data['success'] == false || data['error'] == true)) {
+            setState(() => error = data['message'] ?? 'Usuario o contraseña incorrectos');
+            return;
+          }
+
+          if (data is Map && data['user'] is Map) {
+            final user = data['user'] as Map;
+            final nombre = (user['nombre'] ?? '').toString().trim();
+            final apellido = (user['apellido'] ?? '').toString().trim();
+            final displayName = [nombre, apellido].where((s) => s.isNotEmpty).join(' ');
+
+            if (!mounted) return;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName)),
+            );
+            return;
+          }
+        } catch (_) {
+          // Si la respuesta no es JSON o no contiene user, caemos al fallback.
+        }
+
+        // Fallback: derivar un nombre legible desde el email (parte antes de @)
+        String deriveNameFromEmail(String email) {
+          final at = email.indexOf('@');
+          final local = at > 0 ? email.substring(0, at) : email;
+          final parts = local.split(RegExp(r'[._\-]'));
+          final capitalized = parts.map((p) {
+            final s = p.trim();
+            if (s.isEmpty) return '';
+            return s[0].toUpperCase() + (s.length > 1 ? s.substring(1) : '');
+          }).where((s) => s.isNotEmpty).join(' ');
+          return capitalized.isNotEmpty ? capitalized : email;
+        }
+
+        final displayName = deriveNameFromEmail(usuarioController.text);
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => ControlPage(usuario: usuarioController.text),
-          ),
+          MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName)),
         );
       } else {
         setState(() {
@@ -54,9 +101,10 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         cargando = false;
-        error = 'Error de conexión o tiempo de espera agotado';
+        error = e.toString();
       });
     }
   }
@@ -135,7 +183,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   onPressed: cargando ? null : login,
                   child: cargando
-                      ? const CircularProgressIndicator(color: Colors.white)
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
                       : const Text(
                           'Ingresar',
                           style: TextStyle(fontSize: 16),
@@ -173,4 +225,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+// Helpers (apiBaseUrl) are defined in lib/api_config.dart
 
