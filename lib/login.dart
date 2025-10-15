@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'control_page.dart';
 import 'nuevo.dart';
-import 'api_config.dart';
+// API ahora alojada en Railway
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final response = await http
           .post(
-            Uri.parse('${apiBaseUrl()}/checklist_api/auth/login.php'),
+            Uri.parse('https://checklistapi-production.up.railway.app/auth/login.php'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'email': usuarioController.text,
@@ -50,10 +50,13 @@ class _LoginPageState extends State<LoginPage> {
         cargando = false;
       });
 
+      String? token;
       if (response.statusCode == 200) {
         // Parsear respuesta JSON y usar el objeto `user` si viene del backend.
         try {
           final data = jsonDecode(response.body);
+          // Capturar token si viene
+          token = data is Map && data['token'] != null ? data['token'].toString() : null;
           if (data is Map && (data['success'] == false || data['error'] == true)) {
             setState(() => error = data['message'] ?? 'Usuario o contraseña incorrectos');
             return;
@@ -68,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             if (!mounted) return;
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName)),
+              MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName, token: token)),
             );
             return;
           }
@@ -93,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName)),
+          MaterialPageRoute(builder: (context) => ControlPage(usuario: displayName, token: token)),
         );
       } else {
         setState(() {

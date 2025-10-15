@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class ControlPage extends StatelessWidget {
   final String usuario;
+  final String? token;
 
-  const ControlPage({super.key, required this.usuario});
+  const ControlPage({super.key, required this.usuario, this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +50,26 @@ class ControlPage extends StatelessWidget {
               },
               child: const Text("Asignatura 2"),
             ),
+            const SizedBox(height: 20),
+            // Spacer empuja el token hacia el pie de la pantalla
+            const Spacer(),
+            if (token != null && token!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: Builder(builder: (context) {
+                  final t = token!;
+                  final trunc = t.length > 8 ? '${t.substring(0, 8)}...' : t;
+                  return Text(
+                    'Token: $trunc',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.black45,
+                      fontFamily: 'monospace',
+                    ),
+                  );
+                }),
+              ),
           ],
         ),
       ),

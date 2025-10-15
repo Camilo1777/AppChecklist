@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'api_config.dart';
+// API now hosted on Railway
 
 class NuevoProfesorPage extends StatefulWidget {
   const NuevoProfesorPage({super.key});
@@ -39,7 +39,7 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
     try {
       final response = await http
           .post(
-            Uri.parse('${apiBaseUrl()}/checklist_api/auth/register.php'),
+            Uri.parse('https://checklistapi-production.up.railway.app/auth/register.php'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'idprofesor': idController.text,
