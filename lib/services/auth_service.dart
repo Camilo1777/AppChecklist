@@ -18,9 +18,7 @@ class AuthService {
   static const String baseUrl = 'https://checklistapi-production.up.railway.app';
 
   // Returns stored token if any
-  Future<String?> getToken() async {
-    return _storage.read(key: _tokenKey);
-  }
+  Future<String?> getToken() async => _storage.read(key: _tokenKey);
 
   Future<void> setToken(String token) async {
     await _storage.write(key: _tokenKey, value: token);
@@ -96,10 +94,10 @@ class AuthService {
             .map((s) => s[0].toUpperCase() + (s.length > 1 ? s.substring(1) : ''))
             .join(' ');
       }
-      // Persist friendly name and email for posteriores pantallas
-      await _storage.write(key: _displayNameKey, value: displayName);
-      await _storage.write(key: _emailKey, value: email);
-      return (displayName: displayName, token: token);
+  // Persist friendly name and email para posteriores pantallas
+  await _storage.write(key: _displayNameKey, value: displayName);
+  await _storage.write(key: _emailKey, value: email);
+  return (displayName: displayName, token: token);
     } catch (e) {
       if (kDebugMode) {
         print('Login parse error: $e');

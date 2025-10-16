@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'services/auth_service.dart';
 
 class NuevoProfesorPage extends StatefulWidget {
   const NuevoProfesorPage({super.key});
@@ -11,6 +12,7 @@ class NuevoProfesorPage extends StatefulWidget {
 }
 
 class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
+  final idController = TextEditingController();
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
   final correoController = TextEditingController();
@@ -27,12 +29,13 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
     try {
       final response = await http
           .post(
-            Uri.parse('http://10.0.2.2/checklist_api/auth/register.php'),
+            Uri.parse('${AuthService.baseUrl}/auth/register.php'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
-              'nombre': nombreController.text,
-              'apellido': apellidoController.text,
-              'email': correoController.text,
+              'idprofesor': idController.text.trim(),
+              'nombre': nombreController.text.trim(),
+              'apellido': apellidoController.text.trim(),
+              'email': correoController.text.trim(),
               'password': contrasenaController.text,
             }),
           )
@@ -42,14 +45,25 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
         cargando = false;
       });
 
-      if (response.statusCode == 201) {
-        setState(() {
-          mensaje = 'Profesor creado exitosamente';
-        });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Intentar leer mensaje del backend
+        String serverMsg = 'Profesor creado exitosamente';
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map && data['message'] is String) {
+            serverMsg = data['message'];
+          }
+        } catch (_) {}
+        setState(() { mensaje = serverMsg; });
       } else {
-        setState(() {
-          mensaje = 'Error al crear profesor';
-        });
+        String serverMsg = 'Error al crear profesor (${response.statusCode})';
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map && data['message'] is String) {
+            serverMsg = data['message'];
+          }
+        } catch (_) {}
+        setState(() { mensaje = serverMsg; });
       }
     } catch (e) {
       setState(() {
@@ -62,6 +76,21 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
   bool esEmailValido(String email) {
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     return emailRegex.hasMatch(email);
+  }
+
+  bool esIdValido(String id) {
+    // Aceptar cualquier ID no vacío (puede ser alfanumérico). Ajusta si el backend exige otro formato.
+    return id.trim().isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    idController.dispose();
+    nombreController.dispose();
+    apellidoController.dispose();
+    correoController.dispose();
+    contrasenaController.dispose();
+    super.dispose();
   }
 
   @override
@@ -92,6 +121,12 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
                 ),
               ),
               const SizedBox(height: 24),
+              TextField(
+                controller: idController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'ID (requerido)'),
+              ),
+              const SizedBox(height: 12),
               TextField(
                 controller: nombreController,
                 decoration: const InputDecoration(labelText: 'Nombre'),
@@ -125,6 +160,10 @@ class _NuevoProfesorPageState extends State<NuevoProfesorPage> {
                   onPressed: cargando
                       ? null
                       : () {
+                          if (!esIdValido(idController.text)) {
+                            setState(() { mensaje = 'Por favor ingresa un ID'; });
+                            return;
+                          }
                           if (!esEmailValido(correoController.text)) {
                             setState(() {
                               mensaje = 'Por favor ingresa un correo válido';

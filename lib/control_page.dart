@@ -12,7 +12,6 @@ class ControlPage extends StatefulWidget {
 
 class _ControlPageState extends State<ControlPage> {
   String? _displayName;
-  String? _status;
 
   @override
   void initState() {
@@ -21,13 +20,11 @@ class _ControlPageState extends State<ControlPage> {
   }
 
   Future<void> _load() async {
-    // Prefer stored display name; evita depender del endpoint protegido.
+    // Usa el nombre pasado o el almacenado tras login
     String? name = widget.usuario;
     name ??= await AuthService.instance.getDisplayName();
-    final hasToken = await AuthService.instance.hasValidToken();
-    _status = hasToken ? 'Sesión activa' : 'Sin sesión';
     setState(() {
-      _displayName = name ?? _displayName;
+      _displayName = name;
     });
   }
 
@@ -51,11 +48,7 @@ class _ControlPageState extends State<ControlPage> {
               ),
             ),
             const SizedBox(height: 10),
-            if (_status != null)
-              Text(
-                _status!,
-                style: const TextStyle(color: Colors.green),
-              ),
+            const SizedBox.shrink(),
             const SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
