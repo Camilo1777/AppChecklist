@@ -1,0 +1,49 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Flutter pub get",
+			"type": "shell",
+			"command": "flutter pub get",
+			"args": [],
+			"problemMatcher": [
+				"$flutter"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Flutter analyze",
+			"type": "shell",
+			"command": "flutter analyze",
+			"args": [],
+			"problemMatcher": [
+				"$flutter"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Flutter test",
+			"type": "shell",
+			"command": "flutter test",
+			"args": [],
+			"problemMatcher": [
+				"$flutter"
+			],
+			"group": "test"
+		},
+		{
+			"label": "Re-run analyze and tests",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"flutter analyze; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; flutter test"
+			],
+			"problemMatcher": [
+				"$flutter"
+			],
+			"group": "test"
+		}
+	]
+}

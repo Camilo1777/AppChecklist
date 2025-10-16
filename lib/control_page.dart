@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
+import 'services/auth_service.dart';
 
-class ControlPage extends StatelessWidget {
-  final String usuario;
-  final String? token;
+class ControlPage extends StatefulWidget {
+  final String? usuario;
 
-  const ControlPage({super.key, required this.usuario, this.token});
+  const ControlPage({super.key, this.usuario});
+
+  @override
+  State<ControlPage> createState() => _ControlPageState();
+}
+
+class _ControlPageState extends State<ControlPage> {
+  String? _displayName;
+  String? _status;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    // Prefer stored display name; evita depender del endpoint protegido.
+    String? name = widget.usuario;
+    name ??= await AuthService.instance.getDisplayName();
+    final hasToken = await AuthService.instance.hasValidToken();
+    _status = hasToken ? 'Sesión activa' : 'Sin sesión';
+    setState(() {
+      _displayName = name ?? _displayName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Mostrar el valor que se pase en `usuario` (preparado desde el login)
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -19,13 +43,19 @@ class ControlPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Bienvenido maestro: $usuario 👋",
+              "Bienvenido${_displayName != null ? ', ${_displayName!}' : ''} 👋",
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.orange,
               ),
             ),
+            const SizedBox(height: 10),
+            if (_status != null)
+              Text(
+                _status!,
+                style: const TextStyle(color: Colors.green),
+              ),
             const SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -50,26 +80,11 @@ class ControlPage extends StatelessWidget {
               },
               child: const Text("Asignatura 2"),
             ),
-            const SizedBox(height: 20),
-            // Spacer empuja el token hacia el pie de la pantalla
-            const Spacer(),
-            if (token != null && token!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: Builder(builder: (context) {
-                  final t = token!;
-                  final trunc = t.length > 8 ? '${t.substring(0, 8)}...' : t;
-                  return Text(
-                    'Token: $trunc',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.black45,
-                      fontFamily: 'monospace',
-                    ),
-                  );
-                }),
-              ),
+            const SizedBox(height: 30),
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pushNamed('/profile'),
+              child: const Text('Perfil / Logout'),
+            ),
           ],
         ),
       ),

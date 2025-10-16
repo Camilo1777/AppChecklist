@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'login.dart';
+import 'services/auth_service.dart';
+import 'control_page.dart';
+import 'profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +20,49 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
       ),
-      home: const MyHomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (_) => const SplashGate(),
+        '/landing': (_) => const MyHomePage(),
+        '/login': (_) => const LoginPage(),
+        '/home': (ctx) => const ControlPage(),
+        '/profile': (_) => const ProfilePage(),
+      },
+    );
+  }
+}
+
+/// Splash screen that decides where to go based on token presence/validity
+class SplashGate extends StatefulWidget {
+  const SplashGate({super.key});
+
+  @override
+  State<SplashGate> createState() => _SplashGateState();
+}
+
+class _SplashGateState extends State<SplashGate> {
+  @override
+  void initState() {
+    super.initState();
+    _decide();
+  }
+
+  Future<void> _decide() async {
+    final hasToken = await AuthService.instance.hasValidToken();
+    if (!mounted) return;
+    if (hasToken) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/landing');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
